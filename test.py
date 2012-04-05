@@ -5,4 +5,4 @@ print(m.test())
 
 h = MessageHandler(m)
 
-h.getAll()
+print(h.getAll())
