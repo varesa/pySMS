@@ -64,11 +64,12 @@ class Modem:
 		    return False
 		    
 class Message:
-	Number = None
-	Text = None
+	number = None
+	text = None
 
-	def __init(self, number, message):
-		pass
+	def __init__(self, number, text):
+		self.number=number
+		self.text=text
 
 
 class MessageHandler:
@@ -79,9 +80,11 @@ class MessageHandler:
 			raise Exception('Argument must be instance of Modem')
 		self.modem = modem
 
-	def send(self):
-		pass
-		
+	def send(self, message):
+		if not isinstance(message, Message):
+			raise Exception('Argument must be instance of Message')
+		return self.modem.runcmd("AT+CMGS=\"" + message.number + "\"" + chr(0x0D) + message.text + chr(0x1A))
+
 	def get(self, index):
 		pass
 	
