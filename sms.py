@@ -35,14 +35,20 @@ class Modem:
 		else:
 			self.serPort.write(string + chr(0x0d))
 
-	def read(self, length=10):
+	def read(self, length=200):
 		if self.serPort is None:
 			raise Exception('Port is not open')
 		else:
 			return self.serPort.read(length)
-	
+
 	def clear(self):
 		self.serPort.flushInput()
+
+
+	def runcmd(self,cmd):
+		self.clear()
+		self.write(cmd)
+		return str.strip(self.read())
 
 	def test(self):
 		if self.serPort is None:
