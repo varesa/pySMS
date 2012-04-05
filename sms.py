@@ -1,5 +1,6 @@
 import re
 import serial
+from time import sleep
 
 class Modem:
 	serPort = None
@@ -35,11 +36,11 @@ class Modem:
 		else:
 			self.serPort.write(string + chr(0x0d))
 
-	def read(self, length=200):
+	def read(self):
 		if self.serPort is None:
 			raise Exception('Port is not open')
 		else:
-			return self.serPort.read(length)
+			return self.serPort.read(self.serPort.inWaiting())
 
 	def clear(self):
 		self.serPort.flushInput()
@@ -48,7 +49,8 @@ class Modem:
 	def runcmd(self,cmd):
 		self.clear()
 		self.write(cmd)
-		return str.strip(self.read())
+		sleep(1)
+		return self.read().strip()
 
 	def test(self):
 		if self.serPort is None:
