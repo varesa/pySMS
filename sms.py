@@ -5,7 +5,7 @@ from time import sleep
 class Modem:
 	serPort = None
 
-	def __init__(self, modem=None,timeout=2):
+	def __init__(self, modem=None,timeout=3):
 		if modem is not None:
 			self.serPort = serial.Serial(modem,timeout=timeout)
 
@@ -56,22 +56,21 @@ class Modem:
 		if self.serPort is None:
 			raise Exception('Port is not open')
 		
-		self.clear()
-		self.write("AT")
-		result = self.read()
-		#print(result)
+		result = self.runcmd("AT")
 		if re.search("OK",result):
 		    return True
 		else:
 		    return False
 		    
 class Message:
-	number = None
-	text = None
+	number 	= None
+	text 	= None
+	header	= None
 
-	def __init__(self, number, text):
+	def __init__(self, number="", text="", header=""):
 		self.number=number
 		self.text=text
+		self.header=header
 
 
 class MessageHandler:
@@ -91,4 +90,12 @@ class MessageHandler:
 		pass
 	
 	def getAll(self):
-		pass
+		result = self.modem.runcmd("AT+CMGL=\"ALL\"")
+		messages = result.split("\r\n")[:len(result.split("\r\n"))-2]
+		received = list()
+		for num in range(0,len(messages),2):
+			#print("HEADER: " + messages[num] + "  MSG: " + messages[num+1])
+			if re.search("REC", messages[num]):
+			    received.append(Message(header=messages[num],text=messages[num+1]))
+		return received
+		
