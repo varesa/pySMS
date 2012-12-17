@@ -90,11 +90,11 @@ class MessageHandler:
 		pass
 	
 	def getAll(self):
+		self.modem.runcmd("AT+CMGF=1") # Set text mode
 		result = self.modem.runcmd("AT+CMGL=\"ALL\"")
-		messages = result.split("\r\n")[:len(result.split("\r\n"))-2]
+		messages = result.split("\r\n")[1:len(result.split("\r\n"))-2]
 		received = list()
 		for num in range(0,len(messages),2):
-			#print("HEADER: " + messages[num] + "  MSG: " + messages[num+1])
 			if re.search("REC", messages[num]):
 			    received.append(Message(header=messages[num],text=messages[num+1]))
 		return received
