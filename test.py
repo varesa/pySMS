@@ -1,6 +1,12 @@
+#!/usr/bin/env python
+
+from sys import argv
 from sms import *
 
-m = Modem('/dev/ttyACM0')
+if not argv[1]:
+    Exception('You must specify modem device as the first parameter')
+
+m = Modem(argv[1])
 print(m.test())
 
 h = MessageHandler(m)
